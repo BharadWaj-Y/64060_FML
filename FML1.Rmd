@@ -1,0 +1,37 @@
+---
+title: "FML1"
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-09-25"
+---
+
+```{r setup, include=FALSE}
+# Install and load the 'readr' package (if not already installed)
+library(readr)
+realtor_Data <- read.csv("C:/Users/CherRyY/Documents/R/Rpract/FML/Assignment1/realtor-data.zip.csv")
+head(realtor_Data)
+```
+```{r}
+
+#descriptive Statistics for Quantitative Variables
+
+summary(realtor_Data$acre_lot)
+
+summary(realtor_Data$price)
+
+```
+```{r}
+#descriptive Statistics for Categorical Variables
+
+table(realtor_Data$city)
+```
+```{r}
+#transformation of data
+
+sqfoot <- (realtor_Data$acre_lot)*43560
+realtor_Data$sqfoot <- c(sqfoot)
+
+plot(x=realtor_Data$sqfoot ,  y= realtor_Data$price ,  xlab = "Square foot",ylab =  "Price",xlim = c(500,2000), ylim = c(500,5000), main = "Realstate"
+     )
+```

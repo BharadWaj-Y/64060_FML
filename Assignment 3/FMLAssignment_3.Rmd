@@ -1,0 +1,125 @@
+---
+title: "FML_3"
+author: "Bharadwaj"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+library(caret)
+library(e1071)
+library(ISLR)
+library(reshape2)
+#loading data set required
+data_asign3 <- read.csv("C:/Users/CherRyY/Desktop/dataset/UniversalBank1.csv")
+```
+
+conversion of the variables into factor
+```{r}
+data_asign3$Personal.Loan<-factor(data_asign3$Personal.Loan)
+data_asign3$Online<-factor(data_asign3$Online)
+data_asign3$CreditCard<-factor(data_asign3$CreditCard)
+```
+
+
+
+
+
+
+Splitting data into two sets for training and validation.
+```{r}
+set.seed(1237)
+training<-createDataPartition(data_asign3$Personal.Loan,p=0.6,list = FALSE)
+training_setPart<-data_asign3[training,]
+validation_setPart<-data_asign3[-training,]
+nrow(training_setPart)
+nrow(validation_setPart)
+```
+
+
+Question-A
+
+```{r}
+table1<-xtabs(~CreditCard+Personal.Loan+Online,data=training_setPart)
+ftable(table1)
+
+```
+
+Question-B
+```{r}
+46/(46+460)
+```
+
+
+Question-C
+
+```{r}
+table(Personal.Loan=training_setPart$Personal.Loan,
+      Online=training_setPart$Online)
+
+table(Personal.Loan=training_setPart$Personal.Loan,
+      CreditCard=training_setPart$CreditCard)
+
+table(Personal.Loan=training_setPart$Personal.Loan)
+
+
+
+```
+
+
+Question-D
+```{r}
+
+#i.P(CC = 1 | Loan = 1)
+P1=80/(80+208)
+P1
+#ii. P(Online = 1 | Loan = 1)  
+P2=179/(179+109)
+P2
+#iii. P(Loan = 1) 
+P3=288/(288+2712)
+P3
+#iv. P(CC = 1 | Loan = 0) 
+P4=779/(779+1933)
+P4
+#v. P(Online = 1 | Loan = 0) 
+P5=1599/(1599+1113)
+P5
+#vi. P(Loan = 0) 
+P6=2712/(288+2712)
+P6
+
+```
+
+
+
+Question-E\
+calculating the naive Bayes probability for P(Loan = 1 | CC = 1, Online = 1). 
+
+```{r}
+(P1*P2*P3)/((P1*P2*P3)+(P4*P5*P6))
+
+```
+
+
+
+
+
+Question-F\
+
+The probability from pivot table is 0.1005587 and the calculated naive Bayes probability is 0.1120411. Naive Bayes works on the assumption that attributes are independent of each other. this suggests that probability from the pivot table is more accurate.\
+
+Question-G
+```{r}
+Naivebayes_model<-naiveBayes(Personal.Loan~CreditCard+Online,data = training_setPart)
+testing<-data.frame(CreditCard=1,Online=1)
+testing$CreditCard<-factor(testing$CreditCard)
+testing$Online<-factor(testing$Online)
+predict(Naivebayes_model,testing,type = 'raw')
+
+```
+
+
+The probability of the test data coincides with the probability calculated in question E, which is 0.09768187. This suggests that the Naive Bayes algorithm has made an identical prediction to the calculated probability.
